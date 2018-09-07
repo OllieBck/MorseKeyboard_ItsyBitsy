@@ -1,17 +1,17 @@
 #include<Keyboard.h>
 #include "morseKeyboard.h"
 
-int buzzerPin = 7;
-int debounceTime = 100;
-int ditPin = 11;
-int dahPin = 10;
+int buzzerPin = 12;
+int debounceTime = 200;
+int ditPin = 10;
+int dahPin = 7;
 int ditSound = 880;
 int dahSound = 500;
 int ditSoundDuration = 400;
 int dahSoundDuration = 450;
 int speedTyper = 300;
 int speedSense = 3;
-int accessPin = 13;
+//int accessPin = 3;
 
 char ditKey = 46;
 char dahKey = 45;
@@ -30,12 +30,11 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  //speedTyper = analogRead(A4)/speedSense;
-  speedTyper = 500;
-  
+  speedTyper = analogRead(A5)/speedSense;
+
   //bool shiftValue = bleAccessButton.Check();
-  
   bool shiftValue = false;
-  shortKey.Press(shiftValue, speedTyper);
-  longKey.Press(shiftValue, speedTyper);
+  
+  shortKey.NoRepeat(speedTyper);
+  longKey.NoRepeat(speedTyper);
 }

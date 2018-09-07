@@ -25,7 +25,7 @@ class KeyboardKey {
       freq = freqValue;
       sndLength = sndDuration;
       sndPin = speakerPin;
-      pinMode(keyPin, INPUT);
+      pinMode(keyPin, INPUT_PULLUP);
     }
 
     void Press(boolean isShiftPressed, int ditdahTimer)
@@ -54,7 +54,7 @@ class KeyboardKey {
           while (digitalRead(keyPin) == LOW && millis() - lastDebounceTime > debounceDelay) {
             if (millis() - lastDebounceTime > pressSpeed) {
               int playLength = sndLength - pressSpeed;
-              tone(sndPin, freq, playLength / 2);
+              tone(sndPin, freq, playLength / 3);
               Keyboard.press(keyValue);
               Keyboard.release(keyValue);
               lastDebounceTime = millis();
@@ -62,6 +62,29 @@ class KeyboardKey {
           }
           lastDebounceTime = millis();
         }
+      }
+      else {
+        keyFirstPress = true;
+      }
+    }
+
+    void NoRepeat(int ditdahTimer)
+    {
+      int keyState = digitalRead(keyPin);
+      int playLength = sndLength - pressSpeed;
+      pressSpeed = ditdahTimer;
+
+      if (keyState == LOW) {
+        if (millis() - lastDebounceTime > debounceDelay) {
+          if (keyFirstPress == true) {
+            tone(sndPin, freq, playLength / 3);
+            Keyboard.press(keyValue);
+            Keyboard.release(keyValue);
+            keyFirstPress = false;
+            lastDebounceTime = millis();
+          }
+        }
+        lastDebounceTime = millis();
       }
       else {
         keyFirstPress = true;
@@ -86,7 +109,7 @@ class AccessKey {
     {
       keyPin = pin;
       debounceDelay = debouncerTime;
-      pinMode(keyPin, INPUT);
+      pinMode(keyPin, INPUT_PULLUP);
     }
 
     void Press()
@@ -133,7 +156,7 @@ class AccessKey {
             Keyboard.press(131);
             Keyboard.press(176);
             Keyboard.releaseAll();
-          } 
+          }
         }
       }
       lastButtonState = keyState;
